@@ -11,7 +11,7 @@
 
 
 
-   <div class=" flex flex-col items-center  gap-4  bg-gray-100 m-4">
+   <div class=" flex flex-col items-center  gap-4 m-4">
     <div class="w-full md:flex-1">
       <ExpInvoicesUpload />
     </div>

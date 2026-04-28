@@ -1,7 +1,7 @@
 <template>
   <div>
     <Toast />
-    <Card class="w-full max-w-2xl min-w-[320px] min-h-[400px] mx-auto rounded-lg shadow-lg">
+    <Card class="w-full max-w-2xl min-w-[320px] mx-auto rounded-lg shadow-lg">
       <template #header>
         <div class="text-3xl text-shadow-2xs font-bold text-center text-blue-500 py-4">
           Export From POS
@@ -50,6 +50,7 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import Card from "primevue/card";
 import Button from "primevue/button";
 import Select from "primevue/select";
@@ -80,17 +81,15 @@ const exportCSV = async () => {
 
   try {
     loading.value = true;
-    const res = await fetch(`http://localhost:3000/api/export/${selectedExportType.value.code}`);
 
-    if (!res.ok) {
-      const errorData = await res.json(); // ✅ parse JSON
-      // throw new Error(`HTTP ${res.status}: ${text}`);
-      throw new Error(errorData.message || "Export failed");
-    }
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/export/${selectedExportType.value.code}`,
+      {
+        responseType: "blob",
+      },
+    );
 
-    // ✅ Success (CSV)
-    // const blob = new Blob([text], { type: "text/csv" });
-    const blob = await res.blob(); // ✅ get blob directly
+    const blob = new Blob([res.data], { type: "text/csv" });
 
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -101,17 +100,55 @@ const exportCSV = async () => {
 
     window.URL.revokeObjectURL(url);
   } catch (err) {
+    // catch (err) {
+    //   console.error("Export failed:", err);
+
+    //   toast.add({
+    //     severity: "error",
+    //     summary: "Export Failed",
+    //     detail: err.message,
+    //     life: 4000,
+    //   });
+    // }
+
     console.error("Export failed:", err);
-    // alert(err.message);
-    // ❌ Error toast
-    toast.add({
-      severity: "error",
-      summary: "Export Failed",
-      detail: err.message,
-      life: 4000,
-    });
+
+    // ✅ Check if backend responded
+    if (err.response && err.response.data) {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        try {
+          const errorData = JSON.parse(reader.result);
+
+          toast.add({
+            severity: "warn",
+            summary: "No Data",
+            detail: errorData.message || "No data found",
+            life: 3000,
+          });
+        } catch {
+          toast.add({
+            severity: "error",
+            summary: "Export Failed",
+            detail: "Unexpected error format",
+            life: 4000,
+          });
+        }
+      };
+
+      reader.readAsText(err.response.data);
+    } else {
+      // fallback
+      toast.add({
+        severity: "error",
+        summary: "Export Failed",
+        detail: err.message,
+        life: 4000,
+      });
+    }
   }
+
   loading.value = false;
-  
 };
 </script>

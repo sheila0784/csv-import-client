@@ -1,15 +1,26 @@
 <template>
- <div class="min-h-screen flex flex-col md:flex-row items-center justify-center gap-4 p-4">
-    
-    <div class="w-full md:flex-1">
-      <CsvImporter />
-    </div>
-
+  <!-- <div class="min-h-screen flex flex-col md:flex-row items-center justify-center gap-4 p-4">
     <div class="w-full md:flex-1">
       <ExpInvoicesUpload />
     </div>
 
+    <div class="w-full md:flex-1">
+      <CsvImporter />
+    </div>
+  </div> -->
+
+
+
+   <div class=" flex flex-col items-center  gap-4  bg-gray-100 m-4">
+    <div class="w-full md:flex-1">
+      <ExpInvoicesUpload />
+    </div>
+
+    <div class="w-full md:flex-1">
+      <CsvImporter />
+    </div>
   </div>
+
 </template>
 
 <script setup>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Card class="w-full max-w-2xl min-w-[320px] min-h-[400px] mx-auto rounded-lg shadow-lg">
+    <Card class="w-full max-w-2xl min-w-[320px] mx-auto rounded-lg shadow-lg">
       <template #header>
         <div class="text-3xl text-shadow-2xs font-bold text-center text-blue-500 py-4">
           Solex CSV to POS Importer

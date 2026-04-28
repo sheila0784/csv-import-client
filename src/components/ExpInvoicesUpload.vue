@@ -27,7 +27,13 @@
               </div>
 
               <div class="flex justify-end">
-                <Button label="Export" icon="pi pi-file-export" variant="text" @click="exportCSV" />
+                <Button
+                  label="Export"
+                  icon="pi pi-file-export"
+                  variant="text"
+                  @click="exportCSV"
+                  :loading="loading"
+                />
               </div>
             </div>
           </div>
@@ -52,6 +58,8 @@ import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 
 const toast = useToast();
+const loading = ref(false);
+
 const selectedExportType = ref();
 const exportTypes = ref([
   { name: "POS Invoices To CSV", code: "opt1" },
@@ -71,6 +79,7 @@ const exportCSV = async () => {
   }
 
   try {
+    loading.value = true;
     const res = await fetch(`http://localhost:3000/api/export/${selectedExportType.value.code}`);
 
     if (!res.ok) {
@@ -102,5 +111,7 @@ const exportCSV = async () => {
       life: 4000,
     });
   }
+  loading.value = false;
+  
 };
 </script>
